@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Activity {
+  id              Int           @id @default(autoincrement())
+  name            String        @unique
+  description     String
+  schedule        String
+  scheduleDays    String        // JSON array stored as string, e.g. '["Monday","Friday"]'
+  startTime       String
+  endTime         String
+  maxParticipants Int
+  participants    Participant[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Participant {
+  id         Int      @id @default(autoincrement())
+  email      String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId Int
+  createdAt  DateTime @default(now())
+
+  @@unique([email, activityId])
+}
+
+model Teacher {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  displayName String
+  password    String
+  role        String   @default("teacher")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
