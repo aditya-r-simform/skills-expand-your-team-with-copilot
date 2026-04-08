@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "name": "log-session-start",
+        "run": "echo \"Session started at $(date)\" >> \"${RUNNER_TEMP:-${TMPDIR:-/tmp}}/copilot-session.log\""
+      }
+    ],
+    "preToolUse": [
+      {
+        "name": "log-tool-usage",
+        "run": "echo \"Tool execution: $TOOL_NAME at $(date)\" >> \"${RUNNER_TEMP:-${TMPDIR:-/tmp}}/copilot-tools.log\""
+      }
+    ]
+  }
+}
