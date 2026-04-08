@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "sessionStart": [
+      {
+        "name": "log-session-start",
+        "run": "echo \"Session started at $(date)\" > copilot-session.log"
+      }
+    ],
+    "preToolUse": [
+      {
+        "name": "log-tool-usage",
+        "run": "echo \"Tool execution: $TOOL_NAME at $(date)\" > copilot-tools.log"
+      }
+    ]
+  }
+}
