@@ -74,7 +74,7 @@ export class ActivitiesService {
    * @param activityName - Name of the activity to sign up for.
    * @param email - Student email to register.
    * @param teacherUsername - Teacher username used to authorize the operation.
-   * @returns A confirmation message describing the successful signup.
+   * @returns An object containing a confirmation message describing the successful signup, in the shape `{ message: string }`.
    * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
    * @throws {NotFoundException} When the activity does not exist.
    * @throws {BadRequestException} When the activity is full or the student is already registered.
@@ -119,7 +119,7 @@ export class ActivitiesService {
    * @param activityName - Name of the activity to unregister from.
    * @param email - Student email to remove from the activity.
    * @param teacherUsername - Teacher username used to authorize the operation.
-   * @returns A confirmation message describing the successful unregistration.
+   * @returns An object containing a confirmation message describing the successful unregistration, in the shape `{ message: string }`.
    * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
    * @throws {NotFoundException} When the activity does not exist.
    * @throws {BadRequestException} When the student is not registered for the activity.
