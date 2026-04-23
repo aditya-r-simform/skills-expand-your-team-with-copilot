@@ -75,7 +75,7 @@ export class ActivitiesService {
    * @param email - Student email to register.
    * @param teacherUsername - Teacher username used to authorize the operation.
    * @returns A confirmation message describing the successful signup.
-   * @throws {UnauthorizedException} When the provided teacher credentials are invalid.
+   * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
    * @throws {NotFoundException} When the activity does not exist.
    * @throws {BadRequestException} When the activity is full or the student is already registered.
    */
@@ -120,7 +120,7 @@ export class ActivitiesService {
    * @param email - Student email to remove from the activity.
    * @param teacherUsername - Teacher username used to authorize the operation.
    * @returns A confirmation message describing the successful unregistration.
-   * @throws {UnauthorizedException} When the provided teacher credentials are invalid.
+   * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
    * @throws {NotFoundException} When the activity does not exist.
    * @throws {BadRequestException} When the student is not registered for the activity.
    */
