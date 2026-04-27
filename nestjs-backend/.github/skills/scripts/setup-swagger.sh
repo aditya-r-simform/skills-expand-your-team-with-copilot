@@ -21,8 +21,26 @@ warn()    { echo -e "${YELLOW}[WARN]${RESET}  $*"; }
 error()   { echo -e "${RED}[ERROR]${RESET} $*"; exit 1; }
 
 # ── Config ───────────────────────────────────────────────────
-SWAGGER_PKG="@nestjs/swagger"
 SWAGGER_UI_PKG="swagger-ui-express"
+
+# Resolve compatible @nestjs/swagger version based on installed @nestjs/common
+NESTJS_VERSION=$(node -e "
+  try {
+    const v = require('./node_modules/@nestjs/common/package.json').version;
+    console.log(v.split('.')[0]);
+  } catch(e) {
+    const p = require('./package.json');
+    const dep = (p.dependencies || {})['@nestjs/common'] || '';
+    console.log(dep.replace(/[^0-9]*/,'').split('.')[0] || '10');
+  }
+" 2>/dev/null || echo "10")
+
+if [[ "$NESTJS_VERSION" -ge 11 ]]; then
+  SWAGGER_PKG="@nestjs/swagger"
+else
+  SWAGGER_PKG="@nestjs/swagger@7"
+fi
+info "NestJS major version detected: $NESTJS_VERSION → installing $SWAGGER_PKG"
 APP_PORT="${PORT:-3000}"
 SWAGGER_PATH="api/docs"
 VERIFY=false
@@ -57,7 +75,10 @@ info "Package manager detected: $PKG_MGR"
 
 # ── Check if Swagger is already installed ────────────────────
 check_installed() {
-  node -e "require('$1')" 2>/dev/null && return 0 || return 1
+  # Strip version suffix (e.g. @nestjs/swagger@7 → @nestjs/swagger)
+  local pkg_name="${1%@[0-9]*}"
+  # For scoped packages like @nestjs/swagger, keep the scope
+  node -e "require('$pkg_name')" 2>/dev/null && return 0 || return 1
 }
 
 install_pkg() {
