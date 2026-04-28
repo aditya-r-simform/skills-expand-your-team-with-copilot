@@ -7,12 +7,23 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { SignupActivityDto } from './dto/signup-activity.dto';
 
+/**
+ * ActivitiesController — REST endpoints for the activities domain.
+ *
+ * Applied per nestjs.instructions.md + api-architect agent:
+ * - Controller is thin: all business logic lives in ActivitiesService
+ * - @UsePipes(ValidationPipe) with whitelist strips unknown properties
+ * - Three-layer separation: Controller → Service → Repository
+ */
 @Controller('activities')
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
