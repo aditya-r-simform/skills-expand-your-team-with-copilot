@@ -15,6 +15,16 @@ export class ActivitiesService {
     private readonly authRepository: AuthRepository,
   ) {}
 
+  /**
+   * Gets activities and optionally filters them by schedule day and time range.
+   *
+   * @param filters - Optional activity filter criteria.
+   * @param filters.day - Day to filter scheduled activities by.
+   * @param filters.startTime - Start time (inclusive) for filtering.
+   * @param filters.endTime - End time (inclusive) for filtering.
+   * @returns A map of activity names to activity details formatted for API responses.
+   * @throws {SyntaxError} When persisted `scheduleDays` data cannot be parsed as JSON.
+   */
   async getActivities(filters?: {
     day?: string;
     startTime?: string;
@@ -39,14 +49,36 @@ export class ActivitiesService {
     return result;
   }
 
+  /**
+   * Gets all distinct days that have at least one scheduled activity.
+   *
+   * @returns A list of available activity days.
+   */
   async getAvailableDays(): Promise<string[]> {
     return this.activitiesRepository.findAllDays();
   }
 
+  /**
+   * Creates a new activity.
+   *
+   * @param dto - Activity payload used to create a new activity record.
+   * @returns The created activity record.
+   */
   async createActivity(dto: CreateActivityDto) {
     return this.activitiesRepository.create(dto);
   }
 
+  /**
+   * Registers a student for an activity.
+   *
+   * @param activityName - Name of the activity to sign up for.
+   * @param email - Student email to register.
+   * @param teacherUsername - Teacher username used to authorize the operation.
+   * @returns An object containing a confirmation message describing the successful signup, in the shape `{ message: string }`.
+   * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
+   * @throws {NotFoundException} When the activity does not exist.
+   * @throws {BadRequestException} When the activity is full or the student is already registered.
+   */
   async signupForActivity(
     activityName: string,
     email: string,
@@ -81,6 +113,17 @@ export class ActivitiesService {
     return { message: `Signed up ${email} for ${activityName}` };
   }
 
+  /**
+   * Unregisters a student from an activity.
+   *
+   * @param activityName - Name of the activity to unregister from.
+   * @param email - Student email to remove from the activity.
+   * @param teacherUsername - Teacher username used to authorize the operation.
+   * @returns An object containing a confirmation message describing the successful unregistration, in the shape `{ message: string }`.
+   * @throws {UnauthorizedException} When no teacher exists for the provided teacher username.
+   * @throws {NotFoundException} When the activity does not exist.
+   * @throws {BadRequestException} When the student is not registered for the activity.
+   */
   async unregisterFromActivity(
     activityName: string,
     email: string,
